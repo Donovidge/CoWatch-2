@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CoWatch</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 16px; }
+      .row { display: flex; gap: 16px; flex-wrap: wrap; }
+      video { max-width: 48%; background: #111; }
+      .stack { display: flex; flex-direction: column; gap: 8px; }
+      .box { padding: 12px; border: 1px solid #333; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>CoWatch</h1>
+
+    <div class="box stack">
+      <label><strong>Upload a video file to stream</strong></label>
+      <input id="fileInput" type="file" accept="video/*" />
+      <small>Tip: if autoplay is blocked, click play on the video after choosing a file.</small>
+    </div>
+
+    <div class="row" style="margin-top:12px;">
+      <div class="stack" style="flex:1;">
+        <label>Local Preview</label>
+        <!-- 👇 add muted -->
+        <video id="localVideo" playsinline controls muted></video>
+      </div>
+      <div class="stack" style="flex:1;">
+        <label>Remote View</label>
+        <video id="remoteVideo" playsinline autoplay muted></video>
+      </div>
+    </div>
+
+    <!-- keep this at the very end -->
+    <script type="module" src="./renderer.js"></script>
+  </body>
+</html>

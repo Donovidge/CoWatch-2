@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CoWatch</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>CoWatch</h1>
+      <div class="right">
+  <button id="startLocalBtn" title="Expose a temporary public URL via Localtunnel">Start Public Link</button>
+  <button id="startCfBtn" title="Use Cloudflare Tunnel if Localtunnel is blocked">Start Cloudflare Link</button>
+  <button id="stopLinkBtn" title="Stop any public link">Stop Link</button>
+  <a id="tunnelUrl" class="linkish" href="#" target="_blank"></a>
+  <button id="btnSettings" title="Settings">⚙</button>
+</div>
+
+    </header>
+
+    <div id="settings" class="modal hidden">
+      <div class="modal-card">
+        <h2>Settings</h2>
+        <label>Display name
+          <input id="setName" />
+        </label>
+        <label><input type="checkbox" id="setAutoTunnel" /> Auto-start public link on create</label>
+        <label><input type="checkbox" id="setLoginStart" /> Launch CoWatch at Windows login</label>
+        <div class="row">
+          <button id="btnSaveSettings">Save</button>
+          <button id="btnCloseSettings">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="access">
+      <div class="card">
+        <h2>Access</h2>
+        <div class="grid2">
+          <div>
+            <h3>Create a Room</h3>
+            <label>Room ID <input id="createRoomId" placeholder="e.g. living-room" /></label>
+            <label>PIN <input id="createPin" placeholder="4–8 digits" maxlength="8" /></label>
+            <button id="btnCreate">Create</button>
+            <div id="inviteRow" class="invite-row hidden">
+              <button id="btnCopyInvite">Copy Invite Link</button>
+              <span id="inviteCopied" class="muted"></span>
+            </div>
+          </div>
+          <div>
+            <h3>Join a Room</h3>
+            <label>Username <input id="username" placeholder="Your name" /></label>
+            <label>Room <select id="roomSelect"></select></label>
+            <label>PIN <input id="joinPin" placeholder="PIN" /></label>
+            <div class="row">
+              <button id="btnRefresh">Refresh</button>
+              <button id="btnJoin">Join</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="room" class="hidden">
+      <div class="card">
+        <div class="flex">
+          <div>
+            <h2>Room: <span id="roomLabel"></span></h2>
+            <div class="muted">Share the invite link so your friend can join.</div>
+          </div>
+          <div class="grow"></div>
+          <button id="btnLeave">Leave</button>
+        </div>
+
+        <div class="grid2 top-gap">
+          <div>
+            <h3>Co‑Watch a Video (hosted)</h3>
+            <input type="file" id="filePicker" accept="video/*" />
+            <button id="btnUpload">Upload & Share</button>
+            <div id="videoUrlWrap" class="muted small"></div>
+            <video id="video" controls></video>
+            <div class="row">
+              <button id="btnPlay">Play</button>
+              <button id="btnPause">Pause</button>
+              <button id="btnSync">Sync Time</button>
+            </div>
+          </div>
+          <div>
+            <h3>Screen Share</h3>
+            <button id="btnPickSource">Pick Window/Screen</button>
+            <div id="sources" class="sources"></div>
+            <div class="row">
+              <button id="btnStartShare">Start Full Share</button>
+              <button id="btnStartCropped">Start Cropped Share</button>
+              <button id="btnStopShare">Stop Share</button>
+            </div>
+            <div class="crop-wrap">
+              <video id="sharePreview" autoplay muted playsinline></video>
+              <canvas id="cropCanvas"></canvas>
+              <div id="cropRect" class="crop-rect hidden"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid2 top-gap">
+          <div>
+            <h3>Remote Video</h3>
+            <video id="remoteVideo" autoplay playsinline></video>
+          </div>
+          <div>
+            <h3>Chat</h3>
+            <div id="chatLog" class="chat"></div>
+            <div class="row">
+              <input id="chatInput" placeholder="Type message..." />
+              <button id="btnSend">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="muted small top-gap" id="health"></div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./renderer.js"></script>
+</body>
+</html>

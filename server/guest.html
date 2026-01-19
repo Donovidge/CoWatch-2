@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>CoWatch Guest</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 16px; background:#111; color:#eee; }
+    video { width: 100%; max-height: 80vh; background:#000; }
+    .muted { color:#888; font-size:0.9em; }
+  </style>
+</head>
+<body>
+  <h1>CoWatch Guest</h1>
+  <div id="status" class="muted">Connecting…</div>
+  <video id="remoteVideo" controls autoplay playsinline muted></video>
+
+  <script>
+    const status = document.getElementById('status');
+    const remoteVideo = document.getElementById('remoteVideo');
+
+    const qs = new URLSearchParams(location.search);
+    const roomId = qs.get('room');
+    const pin    = qs.get('pin');
+    const name   = 'guest';
+
+    if (!roomId || !pin) {
+      status.textContent = 'Missing room or pin in URL.';
+      throw new Error('Missing room/pin');
+    }
+
+    const WS_URL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws';
+    const ws = new WebSocket(WS_URL);
+
+    ws.onopen = () => {
+      status.textContent = 'Joining room ' + roomId + '…';
+      ws.send(JSON.stringify({ type:'join', roomId, pin, name }));
+    };
+
+    ws.onmessage = (ev) => {
+      let msg = null;
+      try { msg = JSON.parse(ev.data); } catch {}
+      if (!msg) return;
+
+      switch (msg.type) {
+        case 'joined':
+          status.textContent = 'Joined room ' + msg.roomId + '. Waiting for video…';
+          break;
+        case 'loadVideo':
+          remoteVideo.src = msg.url.startsWith('http')
+            ? msg.url
+            : location.origin + msg.url;
+          remoteVideo.muted = true;
+          remoteVideo.play().catch(()=>{});
+          status.textContent = 'Video loaded';
+          break;
+        case 'play':
+          remoteVideo.play().catch(()=>{});
+          break;
+        case 'pause':
+          remoteVideo.pause();
+          break;
+        case 'seek':
+          if (typeof msg.time === 'number') {
+            remoteVideo.currentTime = msg.time;
+          }
+          break;
+      }
+    };
+
+    ws.onclose = () => {
+      status.textContent = 'Disconnected.';
+    };
+  </script>
+</body>
+</html>
